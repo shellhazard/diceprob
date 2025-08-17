@@ -1,15 +1,21 @@
 package diceprob
 
 import (
+	"context"
 	"strconv"
 	"strings"
 )
 
 // Roll - Roll a random value for the Expression; top-level of the recursive roll functions.
-func (e *Expression) Roll() int64 {
-	left := e.Left.Roll()
+func (e *Expression) Roll(ctx context.Context) int64 {
+	left := e.Left.Roll(ctx)
 	for _, right := range e.Right {
-		left = right.Operator.Roll(left, right.Term.Roll())
+		select {
+		case <-ctx.Done():
+			return -1
+		default:
+		}
+		left = right.Operator.Roll(left, right.Term.Roll(ctx))
 	}
 	return left
 }
@@ -30,23 +36,28 @@ func (o Operator) Roll(left, right int64) int64 {
 }
 
 // Roll - Roll a random value for the Term; part of the recursive roll functions.
-func (t *Term) Roll() int64 {
-	left := t.Left.Roll()
+func (t *Term) Roll(ctx context.Context) int64 {
+	left := t.Left.Roll(ctx)
 	for _, right := range t.Right {
-		left = right.Operator.Roll(left, right.Atom.Roll())
+		select {
+		case <-ctx.Done():
+			return -1
+		default:
+		}
+		left = right.Operator.Roll(left, right.Atom.Roll(ctx))
 	}
 	return left
 }
 
 // Roll - Roll a random value for the Atom; part of the recursive roll functions.
-func (a *Atom) Roll() int64 {
+func (a *Atom) Roll(ctx context.Context) int64 {
 	switch {
 	case a.Modifier != nil:
 		return *a.Modifier
 	case a.RollExpr != nil:
 		return a.RollExpr.Roll()
 	default:
-		return a.SubExpression.Roll()
+		return a.SubExpression.Roll(ctx)
 	}
 }
 

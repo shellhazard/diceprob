@@ -1,6 +1,7 @@
 package diceprob
 
 import (
+	"context"
 	"reflect"
 	"sort"
 	"testing"
@@ -46,6 +47,7 @@ func TestParsed(t *testing.T) {
 }
 
 func TestRoll(t *testing.T) {
+	ctx := context.Background()
 	d, err := New("3d6")
 	if err != nil {
 		t.Errorf("Could not create new instance.")
@@ -53,7 +55,7 @@ func TestRoll(t *testing.T) {
 	t.Logf("d=%v", d)
 	d.Calculate()
 	t.Logf("expected=(%v <= Roll() <= %v)", d.Min(), d.Max())
-	actual := d.Roll()
+	actual := d.Roll(ctx)
 	t.Logf("expected=(%v <= %v <= %v)", d.Min(), actual, d.Max())
 	if !((actual >= d.Min()) && (actual <= d.Max())) {
 		t.Errorf("Rolled value outside of bounds.")

@@ -1,6 +1,7 @@
 package diceprob
 
 import (
+	"context"
 	"sort"
 	"strconv"
 )
@@ -16,8 +17,8 @@ func (d *DiceProb) ParsedExpression() *Expression {
 }
 
 // Roll - Perform a "roll" of the expression and return the outcome.
-func (d *DiceProb) Roll() int64 {
-	return d.parsed.Roll()
+func (d *DiceProb) Roll(ctx context.Context) int64 {
+	return d.parsed.Roll(ctx)
 }
 
 // Min - Minimum outcome value for the expression's distribution.
