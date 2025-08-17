@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jason-dour/diceprob"
+	"github.com/shellhazard/diceprob"
 )
 
 func main() {

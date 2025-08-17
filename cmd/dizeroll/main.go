@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/alecthomas/repr"
-	"github.com/jason-dour/diceprob"
+	"github.com/shellhazard/diceprob"
 )
 
 func main() {

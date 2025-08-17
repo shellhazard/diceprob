@@ -1,5 +1,7 @@
 # diceprob
 
+_(fork note: no changes have been made here, this fork is purely to lock the version of the package.)_
+
 Go package for calculating combinations and probabilities for complex dice expressions.
 
 ## Purpose
@@ -24,7 +26,7 @@ There's a lot of math behind the scenes. I discuss it
 Install with:
 
 ``` shell
-go get github.com/jason-dour/diceprob
+go get github.com/shellhazard/diceprob
 ```
 
 ## Dice Expression Syntax

@@ -1,4 +1,4 @@
-module github.com/jason-dour/diceprob
+module github.com/shellhazard/diceprob
 
 go 1.19
 
