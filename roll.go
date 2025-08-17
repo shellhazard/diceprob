@@ -8,6 +8,12 @@ import (
 
 // Roll - Roll a random value for the Expression; top-level of the recursive roll functions.
 func (e *Expression) Roll(ctx context.Context) int64 {
+	select {
+	case <-ctx.Done():
+		return -1
+	default:
+	}
+
 	left := e.Left.Roll(ctx)
 	for _, right := range e.Right {
 		select {
@@ -37,6 +43,12 @@ func (o Operator) Roll(left, right int64) int64 {
 
 // Roll - Roll a random value for the Term; part of the recursive roll functions.
 func (t *Term) Roll(ctx context.Context) int64 {
+	select {
+	case <-ctx.Done():
+		return -1
+	default:
+	}
+
 	left := t.Left.Roll(ctx)
 	for _, right := range t.Right {
 		select {
@@ -55,14 +67,14 @@ func (a *Atom) Roll(ctx context.Context) int64 {
 	case a.Modifier != nil:
 		return *a.Modifier
 	case a.RollExpr != nil:
-		return a.RollExpr.Roll()
+		return a.RollExpr.Roll(ctx)
 	default:
 		return a.SubExpression.Roll(ctx)
 	}
 }
 
 // Roll - Roll a random value for the DiceRoll; deepest of the recursive roll functions.
-func (s *DiceRoll) Roll() int64 {
+func (s *DiceRoll) Roll(ctx context.Context) int64 {
 	// Convert s to a string.
 	sActual := strings.ToLower(string(*s))
 
@@ -81,7 +93,7 @@ func (s *DiceRoll) Roll() int64 {
 	// If the dice roll is a "middle" roll of 3 dice.
 	if sActual[0:3] == "mid" {
 		// Return a middle rolled value.
-		return rollIt("m", 3, right)
+		return rollIt(ctx, "m", 3, right)
 	}
 	// Not a "middle" roll, therefore a standard roll.
 
@@ -92,5 +104,5 @@ func (s *DiceRoll) Roll() int64 {
 	}
 
 	// Return a standard rolled value.
-	return rollIt("d", left, right)
+	return rollIt(ctx, "d", left, right)
 }

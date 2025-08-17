@@ -1,6 +1,7 @@
 package diceprob
 
 import (
+	"context"
 	"math/rand"
 	"sort"
 	"time"
@@ -31,7 +32,7 @@ func New(s string) (*DiceProb, error) {
 }
 
 // rollIt - Using the selected method, roll n dice of s faces, and return the sum.
-func rollIt(method string, n int64, s int64) int64 {
+func rollIt(ctx context.Context, method string, n int64, s int64) int64 {
 	// Seed the randomizer.
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -45,6 +46,13 @@ func rollIt(method string, n int64, s int64) int64 {
 		for i := int64(1); i <= 3; i++ {
 			// Appending a roll to the array.
 			ret = append(ret, (r.Int63n(s) + 1))
+
+			// Context cancellation
+			select {
+			case <-ctx.Done():
+				return -1
+			default:
+			}
 		}
 		// Sort the array numerically.
 		sort.Slice(ret, func(i, j int) bool { return ret[i] < ret[j] })
@@ -58,6 +66,13 @@ func rollIt(method string, n int64, s int64) int64 {
 		for i := int64(1); i <= n; i++ {
 			// Add the value of the roll to the return value.
 			ret = ret + (r.Int63n(s) + 1)
+
+			// Context cancellation
+			select {
+			case <-ctx.Done():
+				return -1
+			default:
+			}
 		}
 		// Return the summed roll.
 		return ret
