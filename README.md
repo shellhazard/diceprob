@@ -1,6 +1,6 @@
 # diceprob
 
-_(fork note: no changes have been made here, this fork is purely to lock the version of the package.)_
+_(fork note: no changes have been made here besides adding context support)_
 
 Go package for calculating combinations and probabilities for complex dice expressions.
 
